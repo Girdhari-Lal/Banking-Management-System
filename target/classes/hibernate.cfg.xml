@@ -1,0 +1,25 @@
+<!--<?xml version='1.0' encoding='utf-8'?>-->
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- Database connection properties -->
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/banking_system</property>
+        <property name="hibernate.connection.username">root</property>
+
+
+        <!-- SQL dialect for MySQL -->
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</property>
+
+        <!-- Automatic schema generation -->
+        <property name="hibernate.hbm2ddl.auto">update</property>
+
+        <!-- Show SQL in console -->
+        <property name="hibernate.show_sql">false</property>
+        <mapping class="org.example.Customer"/>
+        <mapping class="org.example.Account"/>
+        <mapping class="org.example.AccountTransaction"/>
+    </session-factory>
+</hibernate-configuration>
