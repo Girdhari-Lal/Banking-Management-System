@@ -3,6 +3,8 @@ package org.example;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import java.util.Date;
 import java.util.Scanner;
 
 public class CustomerService {
@@ -40,17 +42,46 @@ public class CustomerService {
         return getAge();
     }
     public String getDateOfBirth(){
-        System.out.print("Date of Birth (YYYY-MM-DD): ");
+        Date d=new Date();
+        int currentYear=d.getYear()+1900;
+        System.out.print("Please enter the Date of Birth in the format (YYYY-MM-DD): ");
         String dateOfBirth = sc.next();
         String stringYear = dateOfBirth.substring(0,4);
-        int year = Integer.parseInt(stringYear);
-        char sign = dateOfBirth.charAt(4);
-        char sign2 = dateOfBirth.charAt(7);
-        String stringMonth = dateOfBirth.substring(5,7);
-        int month = Integer.parseInt(stringMonth);
-        String stringDay = dateOfBirth.substring(8,10);
-        int day = Integer.parseInt(stringDay);
-        if((year>=1950 && year<2024) && month<=12 && day<=31 && sign=='-' && sign2 =='-'){
+        boolean isValid = false;
+        try {
+            int year = Integer.parseInt(stringYear);
+            char sign = dateOfBirth.charAt(4);
+            char sign2 = dateOfBirth.charAt(7);
+            String stringMonth = dateOfBirth.substring(5, 7);
+            int month = Integer.parseInt(stringMonth);
+            String stringDay = dateOfBirth.substring(8, 10);
+            int day = Integer.parseInt(stringDay);
+            if((year>=1950 && year<currentYear) && sign=='-' && sign2 =='-'){
+                int leapYear = year%4;
+                if(leapYear==0 && month==2 && day<30){
+                    isValid = true;
+                }else if(leapYear!=0 && month==2 && day<29){
+                    isValid = true;
+                }else if(leapYear!=0 && month==2 && day>29){
+                    System.out.println("invalid input month day");
+                }else if((month==4 || month==6 || month==9 || month==11) && day<31){
+                    isValid = true;
+                }else if((month==4 || month==6 || month==9 || month==11) && day>=31){
+                    System.out.println("invalid input month day");
+                }else if((month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) && day<32){
+                    isValid = true;
+                }else if((month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) && day>=32){
+                    isValid = true;
+                } else if(month>12) {
+                    System.out.println("invalid input month");
+                }
+            } else{
+                System.out.println("invalid input year");
+            }
+        }catch (NumberFormatException e){
+            System.out.println(e);
+        }
+        if (isValid){
             return dateOfBirth;
         }
         System.out.println("Enter again valid date of birth");

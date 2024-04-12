@@ -98,7 +98,7 @@ public class AccountService {
             account.setType(AccountType.CURRENT);
         }else {
             System.out.println("Invalid account type");
-            setAccountType(account,accountType);
+            getAccountType(account);
         }
     }
     public int getAccountType(Account account){
