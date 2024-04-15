@@ -18,7 +18,7 @@ public class AccountTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "amount", nullable = false)
-    private String amount;
+    private float amount;
     @Column(name = "date", nullable = false)
     private LocalDate date = LocalDate.now();
     @ManyToOne
@@ -30,10 +30,10 @@ public class AccountTransaction {
     public LocalDate getDate() {
         return date;
     }
-    public void setAmount(String amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
-    public String getAmount() {
+    public double getAmount() {
         return amount;
     }
     public Account getAccount() {

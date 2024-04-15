@@ -3,13 +3,12 @@ package org.example;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
-import java.util.Date;
 import java.util.Scanner;
 
 public class CustomerService {
     Scanner sc = new Scanner(System.in);
     public Customer addCustomer(long cnic) {
+        CustomerInputService customerInputService = new CustomerInputService();
         System.out.print("First Name: ");
         String firstName = sc.next();
         System.out.print("Last Name: ");
@@ -17,9 +16,9 @@ public class CustomerService {
         sc.nextLine();
         System.out.print("Address: ");
         String address = sc.nextLine();
-        int age = getAge();
-        String sex = getGender();
-        String dateOfBirth = getDateOfBirth();
+        int age = customerInputService.getAge();
+        GenderType sex = customerInputService.getGender();
+        String dateOfBirth = customerInputService.getDateOfBirth();
         System.out.print("Occupation: ");
         String occupation = sc.next();
         Customer customer = new Customer.CustomerBuilder().setCnic(cnic)
@@ -31,70 +30,6 @@ public class CustomerService {
                 .setDateOfBirth(dateOfBirth)
                 .setOccupation(occupation).build();
         return customer;
-    }
-    public int getAge(){
-        System.out.print("Age: ");
-        int age = sc.nextInt();
-        if(age>=18){
-            return age;
-        }
-        System.out.println("Your are not adult");
-        return getAge();
-    }
-    public String getDateOfBirth(){
-        Date d=new Date();
-        int currentYear=d.getYear()+1900;
-        System.out.print("Please enter the Date of Birth in the format (YYYY-MM-DD): ");
-        String dateOfBirth = sc.next();
-        String stringYear = dateOfBirth.substring(0,4);
-        boolean isValid = false;
-        try {
-            int year = Integer.parseInt(stringYear);
-            char sign = dateOfBirth.charAt(4);
-            char sign2 = dateOfBirth.charAt(7);
-            String stringMonth = dateOfBirth.substring(5, 7);
-            int month = Integer.parseInt(stringMonth);
-            String stringDay = dateOfBirth.substring(8, 10);
-            int day = Integer.parseInt(stringDay);
-            if((year>=1950 && year<currentYear) && sign=='-' && sign2 =='-'){
-                int leapYear = year%4;
-                if(leapYear==0 && month==2 && day<30){
-                    isValid = true;
-                }else if(leapYear!=0 && month==2 && day<29){
-                    isValid = true;
-                }else if(leapYear!=0 && month==2 && day>29){
-                    System.out.println("invalid input month day");
-                }else if((month==4 || month==6 || month==9 || month==11) && day<31){
-                    isValid = true;
-                }else if((month==4 || month==6 || month==9 || month==11) && day>=31){
-                    System.out.println("invalid input month day");
-                }else if((month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) && day<32){
-                    isValid = true;
-                }else if((month==1 || month==3 || month==5 || month==7 || month==8 || month==10 || month==12) && day>=32){
-                    isValid = true;
-                } else if(month>12) {
-                    System.out.println("invalid input month");
-                }
-            } else{
-                System.out.println("invalid input year");
-            }
-        }catch (NumberFormatException e){
-            System.out.println(e);
-        }
-        if (isValid){
-            return dateOfBirth;
-        }
-        System.out.println("Enter again valid date of birth");
-        return getDateOfBirth();
-    }
-    public String getGender(){
-        System.out.print("Enter Gender: ");
-        String sex = sc.next().toUpperCase();
-        if(sex.equals("MALE") || sex.equals("FEMALE") || sex.equals("TRANSGENDER")){
-            return sex;
-        }
-        System.out.println("Enter valid gender");
-        return getGender();
     }
     public void setCustomerInfo(Session session, Customer customer){
         AccountService accountService = new AccountService();
@@ -191,10 +126,10 @@ public class CustomerService {
     public void updateInfo(Scanner sc,Session session) {
         Transaction tx = session.beginTransaction();
         AccountService accountService = new AccountService();
-        int accountId = accountService.getAccountId();
-        String accountPassword = accountService.getAccountPassword();
-        accountService.loginAccount(session, accountId, accountPassword);
-        System.out.print("""
+        Account account = accountService.loginAccount(session);
+        int accountId = account.getId();
+        String accountPassword = account.getPassword();
+                System.out.print("""
                 Select Information to Update:
                 1. First name
                 2. Last name

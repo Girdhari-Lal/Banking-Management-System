@@ -1,11 +1,13 @@
 package org.example;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
 import java.time.LocalDate;
+import javax.persistence.EnumType;
 @Entity
 public class Customer {
     public Customer(){
@@ -39,8 +41,9 @@ public class Customer {
     private String address;
     @Column(name="age", nullable = false)
     private int age;
+    @Enumerated(EnumType.STRING)
     @Column(name="sex", nullable = false)
-    private String sex;
+    private GenderType sex;
     @Column(unique = true, name = "cnic", nullable = false)
     private Long cnic;
     public int getId() {
@@ -52,7 +55,7 @@ public class Customer {
     public String getLastName() {
         return lastName;
     }
-    public String getSex() {
+    public GenderType getSex() {
         return sex;
     }
     public Long getCnic() {
@@ -67,7 +70,6 @@ public class Customer {
     public String getAddress() {
         return address;
     }
-
     public int getAge() {
         return age;
     }
@@ -79,7 +81,7 @@ public class Customer {
         private String dateOfBirth;
         private String address;
         private int age;
-        private String sex;
+        private GenderType sex;
         private Long cnic;
         public CustomerBuilder(Customer customer) {
             this.occupation = customer.getOccupation();
@@ -118,7 +120,7 @@ public class Customer {
             this.age = age;
             return this;
         }
-        public CustomerBuilder setSex(String sex) {
+        public CustomerBuilder setSex(GenderType sex) {
             this.sex = sex;
             return this;
         }
