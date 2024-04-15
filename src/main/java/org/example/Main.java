@@ -29,7 +29,7 @@ public class Main {
                 char letter = sc.next().charAt(0);
                 if(letter=='y'){
                     Account account = accountService.addAccount();
-                    customerService.setAccountInfo(session, customer, account);
+                    accountService.setAccountInfo(session, customer, account);
                  }
             } else if (num == 2) {
                 accountService.closeAccount(session);

@@ -15,15 +15,19 @@ public class AccountInputService {
                 Select Account Type:\s""");
         int Type = sc.nextInt();
         AccountType accountType;
-        if(Type==1){
-            accountType = AccountType.BASIC;
-        } else if (Type==2) {
-            accountType = AccountType.SAVING;
-        } else if(Type==3){
-            accountType = AccountType.CURRENT;
-        }else {
-            System.out.println("Invalid account type");
-            return getAccountType();
+        switch (Type) {
+            case 1:
+                accountType = AccountType.BASIC;
+                break;
+            case 2:
+                accountType = AccountType.SAVING;
+                break;
+            case 3:
+                accountType = AccountType.CURRENT;
+                break;
+            default:
+                System.out.println("Invalid account type");
+                return getAccountType();
         }
         return accountType;
     }
@@ -36,6 +40,16 @@ public class AccountInputService {
         System.out.print("Enter Password: ");
         String accountPassword = sc.next();
         return accountPassword;
+    }
+    public String confirmPassword(){
+        String accountPassword = getAccountPassword();
+        System.out.print("Enter Confirm Password: ");
+        String accountConfirmPassword = sc.next();
+        if(accountConfirmPassword.equals(accountPassword)){
+            return accountPassword;
+        }
+        System.out.println("Password not matched");
+        return confirmPassword();
     }
     public CurrencyType getCurrency(){
         System.out.print("""

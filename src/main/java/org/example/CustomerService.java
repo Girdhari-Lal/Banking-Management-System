@@ -38,14 +38,6 @@ public class CustomerService {
         System.out.println("Detail add Successfully!");
         tx.commit();
     }
-    public void setAccountInfo(Session session, Customer customer, Account account){
-        AccountService accountService = new AccountService();
-        Transaction tx = session.beginTransaction();
-        account.setCustomer(customer);
-        session.save(account);
-        System.out.println("Account Opened Successfully!");
-        tx.commit();
-    }
     public Customer findCustomerByCnic(Session session){
         Customer customer = null;
         System.out.println("Enter Your Details:");
