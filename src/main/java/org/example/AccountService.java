@@ -12,7 +12,7 @@ public class AccountService {
         AccountInputService accountInputService = new AccountInputService();
         AccountType accountType = accountInputService.getAccountType();
         CurrencyType currencyType = accountInputService.getCurrency();
-        String password = accountInputService.confirmPassword();
+        String password = accountInputService.accountConfirmPassword();
         float balance = accountInputService.getBalance(accountType);
         account.setBalance(balance);
         account.setType(accountType);
@@ -31,14 +31,14 @@ public class AccountService {
     }
     public Account loginAccount(Session session){
         AccountInputService accountInputService = new AccountInputService();
-        int accountId = accountInputService.getAccountId();
+        System.out.print("Enter account ID: ");
+        int accountId = sc.nextInt();
         String accountPassword = accountInputService.getAccountPassword();
         String query = "From Account where id=:id and password=:password and isOpen=true";
         Query q = session.createQuery(query);
         q.setParameter("id",accountId);
         q.setParameter("password",accountPassword);
         Object accountResult = q.uniqueResult();
-        Account account = (Account) accountResult;
         if(accountResult==null){
             System.out.println("invalid input");
             System.out.println("Do you want again input password: y/n ");
@@ -49,6 +49,7 @@ public class AccountService {
                 System.exit(0);
             }
         }
+        Account account = (Account) accountResult;
         return account;
     }
     public void depositAmount(Scanner sc,Session session){
@@ -57,12 +58,10 @@ public class AccountService {
         Account account = loginAccount(session);
         System.out.print("Enter Amount to Deposit: ");
         float deposit = sc.nextFloat();
-        //int accountId = account.getId();
-        //account = session.get(Account.class,accountId);
         transaction.setAccount(account);
         float balance = account.getBalance();
         balance += deposit;
-        setAccountService(balance, deposit, transaction, account, session);
+        setAccountBalanceDetails(balance, deposit, transaction, account, session);
         System.out.println("Deposit Successfully");
         tx.commit();
     }
@@ -70,18 +69,17 @@ public class AccountService {
         Transaction tx = session.beginTransaction();
         AccountTransaction transcation = new AccountTransaction();
         Account account = loginAccount(session);
-        //int accountId = account.getId();
-        //account = session.get(Account.class,accountId);
         float amount = account.getBalance();
         transcation.setAccount(account);
         AccountType type = account.getType();
         System.out.print("Enter Amount to Withdraw: ");
         float withdrawAmount = sc.nextFloat();
         float money = amount-withdrawAmount;
+        withdrawAmount = withdrawAmount * -1;
         if(type==AccountType.SAVING && money>=5000){
-            setAccountService(money, -withdrawAmount, transcation, account, session);
+            setAccountBalanceDetails(money, withdrawAmount, transcation, account, session);
         } else if ((type==AccountType.BASIC || type==AccountType.CURRENT) && amount>=withdrawAmount) {
-            setAccountService(money, -withdrawAmount, transcation, account, session);
+            setAccountBalanceDetails(money, withdrawAmount, transcation, account, session);
         }else {
             System.out.println("Insufficient balance");
             tx.commit();
@@ -90,7 +88,7 @@ public class AccountService {
         System.out.println("Withdraw Successful!");
         tx.commit();
     }
-    public void setAccountService(float money, float withdrawAmount, AccountTransaction transcation, Account account, Session session){
+    public void setAccountBalanceDetails(float money, float withdrawAmount, AccountTransaction transcation, Account account, Session session){
         account.setBalance(money);
         transcation.setAmount(withdrawAmount);
         session.save(transcation);

@@ -14,34 +14,20 @@ public class AccountInputService {
                  No Minimum Balance
                 Select Account Type:\s""");
         int Type = sc.nextInt();
-        AccountType accountType;
-        switch (Type) {
-            case 1:
-                accountType = AccountType.BASIC;
-                break;
-            case 2:
-                accountType = AccountType.SAVING;
-                break;
-            case 3:
-                accountType = AccountType.CURRENT;
-                break;
-            default:
-                System.out.println("Invalid account type");
-                return getAccountType();
+        for (AccountType accountType : AccountType.values()) {
+            if (accountType.getValue() == Type) {
+                return accountType;
+            }
         }
-        return accountType;
-    }
-    public int getAccountId(){
-        System.out.print("Enter account ID: ");
-        int accountId = sc.nextInt();
-        return accountId;
+        System.out.println("Invalid input! Enter again");
+        return getAccountType();
     }
     public String getAccountPassword(){
         System.out.print("Enter Password: ");
         String accountPassword = sc.next();
         return accountPassword;
     }
-    public String confirmPassword(){
+    public String accountConfirmPassword(){
         String accountPassword = getAccountPassword();
         System.out.print("Enter Confirm Password: ");
         String accountConfirmPassword = sc.next();
@@ -49,7 +35,7 @@ public class AccountInputService {
             return accountPassword;
         }
         System.out.println("Password not matched");
-        return confirmPassword();
+        return accountConfirmPassword();
     }
     public CurrencyType getCurrency(){
         System.out.print("""
@@ -60,12 +46,12 @@ public class AccountInputService {
                 """);
         System.out.print("Enter currency name: ");
         String currency = sc.next().toUpperCase();
-        if(currency.equals("USD") || currency.equals("EUR") || currency.equals("PKR" ) || currency.equals("YEN")){
+        try{
             return CurrencyType.valueOf(currency);
-        } else {
-            System.out.println("Invalid currency");
-            return getCurrency();
+        }catch (Exception e){
+            System.out.println("Invalid currency! Enter again your currency");
         }
+        return getCurrency();
     }
     public float getBalance(AccountType type){
         System.out.print("Enter amount to Deposit: ");

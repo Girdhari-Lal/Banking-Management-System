@@ -33,7 +33,7 @@ public class AccountTransaction {
     public void setAmount(float amount) {
         this.amount = amount;
     }
-    public double getAmount() {
+    public float getAmount() {
         return amount;
     }
     public Account getAccount() {

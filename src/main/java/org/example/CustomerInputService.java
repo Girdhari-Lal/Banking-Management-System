@@ -8,10 +8,11 @@ public class CustomerInputService {
     public GenderType getGender(){
         System.out.print("Enter Gender: ");
         String sex = sc.next().toUpperCase();
-        if(sex.equals("MALE") || sex.equals("FEMALE") || sex.equals("TRANSGENDER")){
+        try {
             return GenderType.valueOf(sex);
+        }catch (Exception e) {
+            System.out.println("Enter again valid gender");
         }
-        System.out.println("Enter valid gender");
         return getGender();
     }
     public int getAge(){
