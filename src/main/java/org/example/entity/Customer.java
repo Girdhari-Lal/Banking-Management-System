@@ -1,4 +1,6 @@
-package org.example;
+package org.example.entity;
+
+import org.example.constant.GenderType;
 
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
@@ -10,9 +12,7 @@ import java.time.LocalDate;
 import javax.persistence.EnumType;
 @Entity
 public class Customer {
-    public Customer(){
-
-    }
+    public Customer(){}
     private Customer(CustomerBuilder builder){
         this.age = builder.age;
         this.cnic = builder.cnic;
@@ -27,8 +27,10 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column(name = "date", nullable = false)
-    private LocalDate date = LocalDate.now();
+    @Column(name="age", nullable = false)
+    private int age;
+    @Column(unique = true, name = "cnic", nullable = false)
+    private Long cnic;
     @Column(name = "occupation", nullable = false)
     private String occupation;
     @Column(name = "first_name", nullable = false)
@@ -39,16 +41,11 @@ public class Customer {
     private String dateOfBirth;
     @Column(name = "address", nullable = false)
     private String address;
-    @Column(name="age", nullable = false)
-    private int age;
+    @Column(name = "date", nullable = false)
+    private LocalDate date = LocalDate.now();
     @Enumerated(EnumType.STRING)
     @Column(name="sex", nullable = false)
     private GenderType sex;
-    @Column(unique = true, name = "cnic", nullable = false)
-    private Long cnic;
-    public int getId() {
-        return id;
-    }
     public String getOccupation() {
         return occupation;
     }
@@ -74,15 +71,15 @@ public class Customer {
         return age;
     }
 
-    static class CustomerBuilder{
+    public static class CustomerBuilder{
+        private int age;
+        private Long cnic;
         private String occupation;
         private String firstName;
         private String lastName;
         private String dateOfBirth;
         private String address;
-        private int age;
         private GenderType sex;
-        private Long cnic;
         public CustomerBuilder(Customer customer) {
             this.occupation = customer.getOccupation();
             this.firstName = customer.getFirstName();
@@ -93,9 +90,7 @@ public class Customer {
             this.sex = customer.getSex();
             this.cnic = customer.getCnic();
         }
-        public CustomerBuilder(){
-
-        }
+        public CustomerBuilder(){}
         public CustomerBuilder setOccupation(String occupation) {
            this.occupation = occupation;
             return this;

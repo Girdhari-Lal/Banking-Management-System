@@ -1,4 +1,6 @@
-package org.example;
+package org.example.service;
+
+import org.example.constant.GenderType;
 
 import java.util.Date;
 import java.util.Scanner;

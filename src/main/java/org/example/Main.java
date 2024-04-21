@@ -1,5 +1,9 @@
 package org.example;
 
+import org.example.entity.Account;
+import org.example.entity.Customer;
+import org.example.service.AccountService;
+import org.example.service.CustomerService;
 import org.hibernate.Session;
 
 import java.util.Scanner;

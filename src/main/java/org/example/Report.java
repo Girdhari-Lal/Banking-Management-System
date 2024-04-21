@@ -1,5 +1,8 @@
 package org.example;
 
+import org.example.constant.AccountType;
+import org.example.entity.Account;
+import org.example.entity.Customer;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -63,7 +66,7 @@ public class Report {
         Query q = session.createQuery(query);
         List<Account> list=q.list();
         for(Account account:list){
-            if(account.getType()==AccountType.BASIC){
+            if(account.getType()== AccountType.BASIC){
                 basic++;
             } else if (account.getType()==AccountType.SAVING) {
                 saving++;
@@ -87,13 +90,15 @@ public class Report {
         q.setParameter("date",LocalDate.now());
         List<Object[]> resultList = q.list();
         for(Object[] row : resultList){
-            String amount = (String) row[0];
+            Float amount = (Float) row[0];
             String currency = (String) row[1];
-            String type = (String) row[2];
+            String accountType = (String) row[2];
             String firstName = (String) row[3];
             String lastName = (String) row[4];
-            if(amount.contains("-")){
-                System.out.println("Withdraw: "+ amount+" Currency: "+currency+" type: "+type+" account Name: "+firstName+" "+lastName);
+            if(amount<0){
+                System.out.println("Withdraw: "+ amount+" Currency: "+currency+" Account type: "+accountType+" account Name: "+firstName+" "+lastName);
+            }else {
+                System.out.println("No withdraw amount today");
             }
         }
         tx.commit();

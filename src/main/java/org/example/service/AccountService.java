@@ -1,5 +1,10 @@
-package org.example;
+package org.example.service;
 
+import org.example.entity.Account;
+import org.example.AccountTransaction;
+import org.example.entity.Customer;
+import org.example.constant.AccountType;
+import org.example.constant.CurrencyType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
@@ -22,7 +27,6 @@ public class AccountService {
         return account;
     }
     public void setAccountInfo(Session session, Customer customer, Account account){
-        AccountService accountService = new AccountService();
         Transaction tx = session.beginTransaction();
         account.setCustomer(customer);
         session.save(account);
@@ -49,8 +53,7 @@ public class AccountService {
                 System.exit(0);
             }
         }
-        Account account = (Account) accountResult;
-        return account;
+        return (Account) accountResult;
     }
     public void depositAmount(Scanner sc,Session session){
         Transaction tx = session.beginTransaction();
