@@ -16,4 +16,12 @@ public enum AccountType {
     public void setValue(int values) {
         this.value = values;
     }
+    public static AccountType accountType(int value) {
+        for (AccountType type : AccountType.values()) {
+            if (type.value == value) {
+                return type;
+            }
+        }
+        throw new IllegalArgumentException();
+    }
 }

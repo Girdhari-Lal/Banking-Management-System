@@ -18,12 +18,11 @@ public class AccountInputService {
                  No Minimum Balance
                 Select Account Type:\s""");
         int type = sc.nextInt();
-        for (AccountType accountType : AccountType.values()) {
-            if (accountType.getValue() == type) {
-                return accountType;
-            }
+        try {
+            return AccountType.accountType(type);
+        }catch (IllegalArgumentException e){
+            System.out.println("Enter again valid number of account type");
         }
-        System.out.println("Invalid input! Enter again");
         return getAccountType();
     }
     public CurrencyType getCurrency(){
