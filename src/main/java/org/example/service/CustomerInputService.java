@@ -7,6 +7,8 @@ import java.util.Scanner;
 
 public class CustomerInputService {
     Scanner sc = new Scanner(System.in);
+    Date d=new Date();
+    int currentYear=d.getYear()+1900;
     public GenderType getGender(){
         System.out.print("Enter Gender: ");
         String sex = sc.next().toUpperCase();
@@ -17,18 +19,21 @@ public class CustomerInputService {
         }
         return getGender();
     }
-    public int getAge(){
-        System.out.print("Age: ");
-        int age = sc.nextInt();
-        if(age>=18){
-            return age;
+    public int getAge(String dateOfBirth){
+        int birthYear = Integer.parseInt(dateOfBirth.substring(0,4));
+        int birthMonth = Integer.parseInt(dateOfBirth.substring(5,7));
+        int currentMonth = d.getMonth()+1;
+        int age = currentYear - birthYear;
+        if(birthMonth>currentMonth){
+            age--;
         }
-        System.out.println("Your are not adult");
-        return getAge();
+        if(age<18){
+            System.out.println("Your are not adult");
+            System.exit(0);
+        }
+        return age;
     }
     public String getDateOfBirth(){
-        Date d=new Date();
-        int currentYear=d.getYear()+1900;
         System.out.print("Please enter the Date of Birth in the format (YYYY-MM-DD): ");
         String dateOfBirth = sc.next();
         String stringYear = dateOfBirth.substring(0,4);
@@ -61,11 +66,11 @@ public class CustomerInputService {
             } else{
                 System.out.println("invalid input year");
             }
-        }catch (NumberFormatException e){
-            System.out.println(e);
+        }catch (Exception e){
+            isValid = false;
         }
         if (!isValid){
-            System.out.println("Enter again valid date of birth");
+            System.out.println("Enter valid date of birth again example: 2000-01-01");
             return getDateOfBirth();
         }
         return dateOfBirth;
