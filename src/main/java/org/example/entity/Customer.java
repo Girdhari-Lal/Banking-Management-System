@@ -14,7 +14,6 @@ import javax.persistence.EnumType;
 public class Customer {
     public Customer(){}
     private Customer(CustomerBuilder builder){
-        this.age = builder.age;
         this.cnic = builder.cnic;
         this.occupation = builder.occupation;
         this.firstName = builder.firstName;
@@ -27,10 +26,8 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column(name="age", nullable = false)
-    private int age;
     @Column(unique = true, name = "cnic", nullable = false)
-    private Long cnic;
+    private String cnic;
     @Column(name = "occupation", nullable = false)
     private String occupation;
     @Column(name = "first_name", nullable = false)
@@ -55,7 +52,7 @@ public class Customer {
     public GenderType getSex() {
         return sex;
     }
-    public Long getCnic() {
+    public String getCnic() {
         return cnic;
     }
     public String getFirstName() {
@@ -67,13 +64,9 @@ public class Customer {
     public String getAddress() {
         return address;
     }
-    public int getAge() {
-        return age;
-    }
 
     public static class CustomerBuilder{
-        private int age;
-        private Long cnic;
+        private String cnic;
         private String occupation;
         private String firstName;
         private String lastName;
@@ -86,7 +79,6 @@ public class Customer {
             this.lastName = customer.getLastName();
             this.dateOfBirth = customer.getDateOfBirth();
             this.address = customer.getAddress();
-            this.age = customer.getAge();
             this.sex = customer.getSex();
             this.cnic = customer.getCnic();
         }
@@ -112,14 +104,13 @@ public class Customer {
             return this;
         }
         public CustomerBuilder setAge(int age) {
-            this.age = age;
             return this;
         }
         public CustomerBuilder setSex(GenderType sex) {
             this.sex = sex;
             return this;
         }
-        public CustomerBuilder setCnic(Long cnic) {
+        public CustomerBuilder setCnic(String cnic) {
             this.cnic = cnic;
             return this;
         }

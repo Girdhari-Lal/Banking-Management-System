@@ -33,7 +33,7 @@ public class CustomerInputService {
             int month = Integer.parseInt(stringMonth);
             String stringDay = dateOfBirth.substring(8, 10);
             int day = Integer.parseInt(stringDay);
-            if((year>=1950 && year<currentYear) && sign=='-' && sign2 =='-'){
+            if(sign=='-' && sign2 =='-'){
                 int leapYear = year%4;
                 if(leapYear==0 && month==2 && day>29){
                     System.out.println("In leap year month days can't greater than 29");
@@ -53,9 +53,7 @@ public class CustomerInputService {
             } else{
                 System.out.println("invalid input year");
             }
-        }catch (NumberFormatException e){
-            isValid = false;
-        }catch (Exception e){
+        }catch (NumberFormatException | StringIndexOutOfBoundsException n){
             isValid = false;
         }
         if (!isValid){

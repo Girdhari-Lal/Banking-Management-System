@@ -7,13 +7,11 @@ import org.example.constant.GenderType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
-
-import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CustomerService {
     Scanner sc = new Scanner(System.in);
-    public Customer addCustomer(long cnic) {
+    public Customer addCustomer(String cnic) {
         CustomerInputService customerInputService = new CustomerInputService();
         System.out.print("First Name: ");
         String firstName = sc.next();
@@ -23,32 +21,24 @@ public class CustomerService {
         System.out.print("Address: ");
         String address = sc.nextLine();
         GenderType sex = customerInputService.getGender();
-        String dateOfBirth = customerInputService.getDateOfBirth();
-        int age = AgeCalculaotrUtil.calculateAge(dateOfBirth);
+        String validage = AgeCalculaotrUtil.calculateAge();
         System.out.print("Occupation: ");
         String occupation = sc.next();
         Customer customer = new Customer.CustomerBuilder().setCnic(cnic)
                 .setFirstName(firstName)
                 .setLastName(lastName)
                 .setAddress(address)
-                .setAge(age)
                 .setSex(sex)
-                .setDateOfBirth(dateOfBirth)
+                .setDateOfBirth(validage)
                 .setOccupation(occupation).build();
         return customer;
     }
     public Customer findCustomerByCnic(Session session){
         Customer customer = null;
         System.out.println("Enter Your Details:");
-        long cnic = 0;
-        try {
-            System.out.print("Enter your CNIC without -: ");
-            cnic = sc.nextLong();
-        }catch (InputMismatchException e){
-            System.out.println("Enter agin your CNIC without dash");
-            return findCustomerByCnic(session);
-        }
-        if(String.valueOf(cnic).length()==13) {
+        System.out.print("Enter your CNIC without -: ");
+        String cnic = sc.next();
+        if(cnic.length()==13) {
             String query = "FROM Customer WHERE cnic = :cnic";
             Query q = session.createQuery(query);
             q.setParameter("cnic", cnic);

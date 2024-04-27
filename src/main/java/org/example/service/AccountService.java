@@ -78,11 +78,11 @@ public class AccountService {
         System.out.print("Enter Amount to Withdraw: ");
         float withdrawAmount = sc.nextFloat();
         float money = amount-withdrawAmount;
-        withdrawAmount = withdrawAmount * -1;
+        float withdrawSignAmount = withdrawAmount * -1;
         if(type==AccountType.SAVING && money>=5000){
-            setAccountBalanceDetails(money, withdrawAmount, transcation, account, session);
+            setAccountBalanceDetails(money, withdrawSignAmount, transcation, account, session);
         } else if ((type==AccountType.BASIC || type==AccountType.CURRENT) && amount>=withdrawAmount) {
-            setAccountBalanceDetails(money, withdrawAmount, transcation, account, session);
+            setAccountBalanceDetails(money, withdrawSignAmount, transcation, account, session);
         }else {
             System.out.println("Insufficient balance");
             tx.commit();

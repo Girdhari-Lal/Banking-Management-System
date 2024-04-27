@@ -23,18 +23,18 @@ public class Report {
         System.out.print("Enter number: ");
         int num = sc.nextInt();
         if(num == 1){
-            openToday(session);
+            openAccountToday(session);
         } else if (num==2) {
             printClosingBalance(session);
         } else if (num==3) {
-            todayWithdraw(session);
+            withdrawToday(session);
         } else if (num==4) {
             accountTypeCount(session);
         } else if (num==5) {
-            allCustomerDetail(session);
+            detailAllCustomer(session);
         }
     }
-    public void openToday(Session session){
+    public void openAccountToday(Session session){
         Transaction tx = session.beginTransaction();
         String query = "From Customer where date=:date";
         Query q = session.createQuery(query);
@@ -42,20 +42,20 @@ public class Report {
         List<Customer> list=q.list();
         if(!list.isEmpty()) {
             for (Customer detail : list) {
-                System.out.println("First Name: " + detail.getFirstName() + " Last Name: " + detail.getLastName() + " occupation: " + detail.getOccupation() + " CNIC: " + detail.getCnic());
+                System.out.println("Name: " + detail.getFirstName() +" "+ detail.getLastName() + ", Occupation: " + detail.getOccupation() + ", CNIC: " + detail.getCnic());
             }
         }else {
             System.out.println("No new account open today");
         }
         tx.commit();
     }
-    public void allCustomerDetail(Session session){
+    public void detailAllCustomer(Session session){
         Transaction tx = session.beginTransaction();
         String query = "From Customer";
         Query q = session.createQuery(query);
         List<Customer> list = q.list();
         for(Customer customer:list){
-            System.out.println("First Name: "+customer.getFirstName()+" Last Name: "+customer.getLastName()+" CNIC: "+customer.getCnic()+" occupation: "+customer.getOccupation());
+            System.out.println("Name: "+customer.getFirstName()+" "+customer.getLastName()+", CNIC: "+customer.getCnic()+", Occupation: "+customer.getOccupation());
         }
         tx.commit();
     }
@@ -79,7 +79,7 @@ public class Report {
         System.out.println("Current Account: "+current);
         tx.commit();
     }
-    public void todayWithdraw(Session session) {
+    public void withdrawToday(Session session) {
         Transaction tx = session.beginTransaction();
         String query = "SELECT t.amount, a.currency, a.type, c.first_name, c.last_name \n" +
                 "FROM account_transaction t\n" +
@@ -89,18 +89,16 @@ public class Report {
         Query q = session.createSQLQuery(query);
         q.setParameter("date", LocalDate.now());
         List<Object[]> resultList = q.list();
-        boolean value = true;
+        if(resultList.isEmpty()) {
+            System.out.println("No withdraw amount today");
+        }
         for (Object[] row : resultList) {
-            value = false;
             Float amount = (Float) row[0];
             String currency = (String) row[1];
             String accountType = (String) row[2];
             String firstName = (String) row[3];
             String lastName = (String) row[4];
-            System.out.println("Withdraw: " + amount + " Currency: " + currency + " Account type: " + accountType + " account Name: " + firstName + " " + lastName);
-        }
-        if(value) {
-            System.out.println("No withdraw amount today");
+            System.out.println("Withdraw: " + amount + ", Currency: " + currency + ", Account type: " + accountType + ", account Name: " + firstName + " " + lastName);
         }
         tx.commit();
     }
