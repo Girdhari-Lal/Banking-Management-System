@@ -7,6 +7,8 @@ import org.example.constant.GenderType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
+
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class CustomerService {
@@ -38,8 +40,14 @@ public class CustomerService {
     public Customer findCustomerByCnic(Session session){
         Customer customer = null;
         System.out.println("Enter Your Details:");
-        System.out.print("Enter your CNIC without -: ");
-        long cnic = sc.nextLong();
+        long cnic = 0;
+        try {
+            System.out.print("Enter your CNIC without -: ");
+            cnic = sc.nextLong();
+        }catch (InputMismatchException e){
+            System.out.println("Enter agin your CNIC without dash");
+            return findCustomerByCnic(session);
+        }
         if(String.valueOf(cnic).length()==13) {
             String query = "FROM Customer WHERE cnic = :cnic";
             Query q = session.createQuery(query);
