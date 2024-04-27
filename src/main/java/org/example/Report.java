@@ -79,7 +79,7 @@ public class Report {
         System.out.println("Current Account: "+current);
         tx.commit();
     }
-    public void todayWithdraw(Session session){
+    public void todayWithdraw(Session session) {
         Transaction tx = session.beginTransaction();
         String query = "SELECT t.amount, a.currency, a.type, c.first_name, c.last_name \n" +
                 "FROM account_transaction t\n" +
@@ -87,19 +87,20 @@ public class Report {
                 "JOIN Customer c ON a.customer_id = c.id\n" +
                 "WHERE t.date = :date  and a.is_open=1\n";
         Query q = session.createSQLQuery(query);
-        q.setParameter("date",LocalDate.now());
+        q.setParameter("date", LocalDate.now());
         List<Object[]> resultList = q.list();
-        for(Object[] row : resultList){
+        boolean value = true;
+        for (Object[] row : resultList) {
+            value = false;
             Float amount = (Float) row[0];
             String currency = (String) row[1];
             String accountType = (String) row[2];
             String firstName = (String) row[3];
             String lastName = (String) row[4];
-            if(amount<0){
-                System.out.println("Withdraw: "+ amount+" Currency: "+currency+" Account type: "+accountType+" account Name: "+firstName+" "+lastName);
-            }else {
-                System.out.println("No withdraw amount today");
-            }
+            System.out.println("Withdraw: " + amount + " Currency: " + currency + " Account type: " + accountType + " account Name: " + firstName + " " + lastName);
+        }
+        if(value) {
+            System.out.println("No withdraw amount today");
         }
         tx.commit();
     }
