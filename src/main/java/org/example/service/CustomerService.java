@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.AgeCalculaotrUtil;
 import org.example.entity.Account;
 import org.example.entity.Customer;
 import org.example.constant.GenderType;
@@ -21,7 +22,7 @@ public class CustomerService {
         String address = sc.nextLine();
         GenderType sex = customerInputService.getGender();
         String dateOfBirth = customerInputService.getDateOfBirth();
-        int age = customerInputService.getAge(dateOfBirth);
+        int age = AgeCalculaotrUtil.calculateAge(dateOfBirth);
         System.out.print("Occupation: ");
         String occupation = sc.next();
         Customer customer = new Customer.CustomerBuilder().setCnic(cnic)
@@ -55,7 +56,6 @@ public class CustomerService {
         return customer;
     }
     public void setCustomerInfo(Session session, Customer customer){
-        AccountService accountService = new AccountService();
         Transaction tx = session.beginTransaction();
         session.save(customer);
         System.out.println("Detail add Successfully!");

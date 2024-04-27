@@ -2,13 +2,12 @@ package org.example.service;
 
 import org.example.constant.GenderType;
 
+import java.time.Year;
 import java.util.Date;
 import java.util.Scanner;
 
 public class CustomerInputService {
     Scanner sc = new Scanner(System.in);
-    Date d=new Date();
-    int currentYear=d.getYear()+1900;
     public GenderType getGender(){
         System.out.print("Enter Gender: ");
         String sex = sc.next().toUpperCase();
@@ -19,21 +18,9 @@ public class CustomerInputService {
         }
         return getGender();
     }
-    public int getAge(String dateOfBirth){
-        int birthYear = Integer.parseInt(dateOfBirth.substring(0,4));
-        int birthMonth = Integer.parseInt(dateOfBirth.substring(5,7));
-        int currentMonth = d.getMonth()+1;
-        int age = currentYear - birthYear;
-        if(birthMonth>currentMonth){
-            age--;
-        }
-        if(age<18){
-            System.out.println("Your are not adult");
-            System.exit(0);
-        }
-        return age;
-    }
     public String getDateOfBirth(){
+        Year thisYear = Year.now();
+        int currentYear= thisYear.getValue();
         System.out.print("Please enter the Date of Birth in the format (YYYY-MM-DD): ");
         String dateOfBirth = sc.next();
         String stringYear = dateOfBirth.substring(0,4);
@@ -66,6 +53,8 @@ public class CustomerInputService {
             } else{
                 System.out.println("invalid input year");
             }
+        }catch (NumberFormatException e){
+            isValid = false;
         }catch (Exception e){
             isValid = false;
         }
