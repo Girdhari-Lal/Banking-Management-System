@@ -18,8 +18,8 @@
 
         <!-- Show SQL in console -->
         <property name="hibernate.show_sql">false</property>
-        <mapping class="org.example.Customer"/>
-        <mapping class="org.example.Account"/>
+        <mapping class="org.example.entity.Customer"/>
+        <mapping class="org.example.entity.Account"/>
         <mapping class="org.example.AccountTransaction"/>
     </session-factory>
 </hibernate-configuration>

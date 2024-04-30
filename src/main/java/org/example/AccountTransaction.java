@@ -1,5 +1,7 @@
 package org.example;
 
+import org.example.entity.Account;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -10,7 +12,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import java.time.LocalDate;
 
-;
 @Entity
 @Table(name = "account_transaction")
 public class AccountTransaction {
@@ -18,7 +19,7 @@ public class AccountTransaction {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @Column(name = "amount", nullable = false)
-    private String amount;
+    private float amount;
     @Column(name = "date", nullable = false)
     private LocalDate date = LocalDate.now();
     @ManyToOne
@@ -27,16 +28,7 @@ public class AccountTransaction {
     public void setAccount(Account account) {
         this.account = account;
     }
-    public LocalDate getDate() {
-        return date;
-    }
-    public void setAmount(String amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
-    }
-    public String getAmount() {
-        return amount;
-    }
-    public Account getAccount() {
-        return account;
     }
 }
