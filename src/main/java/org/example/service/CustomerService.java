@@ -1,57 +1,28 @@
 package org.example.service;
 
-import org.example.AgeCalculaotrUtil;
 import org.example.entity.Account;
 import org.example.entity.Customer;
-import org.example.constant.GenderType;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import java.util.Scanner;
 
 public class CustomerService {
-    Scanner sc = new Scanner(System.in);
-    public Customer addCustomer(String cnic) {
+    public Customer findOrAddCustomer(Session session) {
         CustomerInputService customerInputService = new CustomerInputService();
-        System.out.print("First Name: ");
-        String firstName = sc.next();
-        System.out.print("Last Name: ");
-        String lastName = sc.next();
-        sc.nextLine();
-        System.out.print("Address: ");
-        String address = sc.nextLine();
-        GenderType sex = customerInputService.getGender();
-        String validage = AgeCalculaotrUtil.calculateAge();
-        System.out.print("Occupation: ");
-        String occupation = sc.next();
-        Customer customer = new Customer.CustomerBuilder().setCnic(cnic)
-                .setFirstName(firstName)
-                .setLastName(lastName)
-                .setAddress(address)
-                .setSex(sex)
-                .setDateOfBirth(validage)
-                .setOccupation(occupation).build();
-        return customer;
-    }
-    public Customer findCustomerByCnic(Session session){
-        Customer customer = null;
-        System.out.println("Enter Your Details:");
-        System.out.print("Enter your CNIC without -: ");
-        String cnic = sc.next();
-        if(cnic.length()==13) {
-            String query = "FROM Customer WHERE cnic = :cnic";
-            Query q = session.createQuery(query);
-            q.setParameter("cnic", cnic);
-            Object result = q.uniqueResult();
-            customer = (Customer) result;
-            if (customer == null) {
-                customer = addCustomer(cnic);
-            }
-        }else {
-            System.out.println("Enter valid CNIC again");
-            return findCustomerByCnic(session);
+        String cnic = customerInputService.getCnic();
+        Customer customer = findCustomerByCnic(session,cnic);
+        if (customer == null) {
+            customer = customerInputService.inputCustomerDetail(cnic);
         }
         return customer;
+    }
+    public Customer findCustomerByCnic(Session session, String cnic){
+        String query = "FROM Customer WHERE cnic =: cnic";
+        Query q = session.createQuery(query);
+        q.setParameter("cnic", cnic);
+        Object result = q.uniqueResult();
+        return (Customer) result;
     }
     public void setCustomerInfo(Session session, Customer customer){
         Transaction tx = session.beginTransaction();
@@ -108,61 +79,4 @@ public class CustomerService {
         System.out.println("Updated Successfully!");
         tx.commit();
     }
-    //    public void updateInfo(Scanner sc,Session session) {
-//            Transaction tx = session.beginTransaction();
-//            AccountService accountService = new AccountService();
-//            int accountId = accountService.inputAccountId();
-//            String accountPassword = accountService.inputAccountPassword();
-//            System.out.print("""
-//                Select Information to Update:
-//                1. First name
-//                2. Last name
-//                3. Address
-//                4. Occupation
-//                Enter Selection:\s""");
-//            int num = sc.nextInt();
-//            String query = "SELECT a.customer FROM Account a WHERE a.id=:id and a.password = :password  and a.isOpen=true";
-//            Query q = session.createQuery(query);
-//            q.setParameter("id",accountId);
-//            q.setParameter("password", accountPassword);
-//            Object result = q.uniqueResult();
-//            Customer customer = (Customer) result;
-//        //int getAccountId = customer.getId();
-//        //customer = (Customer) session.get(Customer.class, getAccountId);
-//        Customer builder = null;
-//        if (num==1){
-//            System.out.print("Enter first name: ");
-//            String firstName = sc.next();
-//            builder = new Customer.CustomerBuilder(customer)
-//                    .setFirstName(firstName)
-//                    .build();
-//            System.out.println("First name Updated Successfully!");
-//        } else if(num==2){
-//            System.out.print("Enter last name: ");
-//            String lastName = sc.next();
-//            builder = new Customer.CustomerBuilder(customer)
-//                    .setLastName(lastName)
-//                    .build();
-//            System.out.println("Last name Updated Successfully!");
-//        } else if(num==3){
-//            System.out.print("Enter Address: ");
-//            sc.nextLine();
-//            String address = sc.nextLine();
-//            builder = new Customer.CustomerBuilder(customer)
-//                    .setAddress(address)
-//                    .build();
-//            System.out.println("Address Updated Successfully!");
-//        } else if (num==4) {
-//            System.out.print("Enter Occupation: ");
-//            String occupation = sc.next();
-//            builder = new Customer.CustomerBuilder(customer)
-//                    .setOccupation(occupation)
-//                    .build();
-//            System.out.println("Occupation Updated Successfully!");
-//        }else {
-//            System.out.println("Error");
-//        }
-//        session.update(builder);
-//        tx.commit();
-//    }
 }

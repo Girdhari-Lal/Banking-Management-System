@@ -12,6 +12,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import java.time.LocalDate;
 
 @Entity
 public class Account {
@@ -25,6 +26,8 @@ public class Account {
     private boolean isOpen;
     @Column(name = "password", nullable = false)
     private String password;
+    @Column(name = "date_created", nullable = false)
+    private LocalDate date_created = LocalDate.now();
     @Enumerated(EnumType.STRING)
     @Column(name = "currency", nullable = false)
     private CurrencyType currency;

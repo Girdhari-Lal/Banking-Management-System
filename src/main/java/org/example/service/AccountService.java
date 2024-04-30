@@ -12,20 +12,6 @@ import java.util.Scanner;
 
 public class AccountService {
     Scanner sc = new Scanner(System.in);
-    public Account addAccount(){
-        Account account = new Account();
-        AccountInputService accountInputService = new AccountInputService();
-        AccountType accountType = accountInputService.getAccountType();
-        CurrencyType currencyType = accountInputService.getCurrency();
-        String password = accountInputService.accountConfirmPassword();
-        float balance = accountInputService.getBalance(accountType);
-        account.setBalance(balance);
-        account.setType(accountType);
-        account.setCurrency(currencyType);
-        account.setOpen(true);
-        account.setPassword(password);
-        return account;
-    }
     public void setAccountInfo(Session session, Customer customer, Account account){
         Transaction tx = session.beginTransaction();
         account.setCustomer(customer);
@@ -45,7 +31,7 @@ public class AccountService {
         Object accountResult = q.uniqueResult();
         if(accountResult==null){
             System.out.println("invalid input");
-            System.out.println("Do you want again input password: y/n ");
+            System.out.print("Do you want again input password(y/n): ");
             char latter  = sc.next().charAt(0);
             if(latter=='y') {
                  return loginAccount(session);
@@ -57,38 +43,40 @@ public class AccountService {
     }
     public void depositAmount(Scanner sc,Session session){
         Transaction tx = session.beginTransaction();
-        AccountTransaction transaction = new AccountTransaction();
         Account account = loginAccount(session);
         System.out.print("Enter Amount to Deposit: ");
         float deposit = sc.nextFloat();
-        transaction.setAccount(account);
-        float balance = account.getBalance();
-        balance += deposit;
-        setAccountBalanceDetails(balance, deposit, transaction, account, session);
-        System.out.println("Deposit Successfully");
+        if(deposit>0) {
+            AccountTransaction transaction = new AccountTransaction();
+            transaction.setAccount(account);
+            float currentBalance = account.getBalance();
+            float updatedBalance = currentBalance + deposit;
+            setAccountBalanceDetails(updatedBalance, deposit, transaction, account, session);
+            System.out.println("Deposit Successfully");
+        }else {
+            System.out.println(deposit + " is not valid amount");
+        }
         tx.commit();
     }
     public void withdrawAmount(Session session){
         Transaction tx = session.beginTransaction();
-        AccountTransaction transcation = new AccountTransaction();
         Account account = loginAccount(session);
-        float amount = account.getBalance();
-        transcation.setAccount(account);
         AccountType type = account.getType();
+        float amount = account.getBalance();
         System.out.print("Enter Amount to Withdraw: ");
         float withdrawAmount = sc.nextFloat();
         float money = amount-withdrawAmount;
         float withdrawSignAmount = withdrawAmount * -1;
-        if(type==AccountType.SAVING && money>=5000){
-            setAccountBalanceDetails(money, withdrawSignAmount, transcation, account, session);
-        } else if ((type==AccountType.BASIC || type==AccountType.CURRENT) && amount>=withdrawAmount) {
-            setAccountBalanceDetails(money, withdrawSignAmount, transcation, account, session);
+        if(withdrawAmount<=0){
+            System.out.println(withdrawAmount + " is not valid amount");
+        } else if((type == AccountType.SAVING && money >= 5000) || (type == AccountType.BASIC && money >= 1000) || (type == AccountType.CURRENT && amount >= withdrawAmount)) {
+            AccountTransaction transaction = new AccountTransaction();
+            transaction.setAccount(account);
+            setAccountBalanceDetails(money, withdrawSignAmount, transaction, account, session);
+            System.out.println("Withdraw Successful!");
         }else {
             System.out.println("Insufficient balance");
-            tx.commit();
-            return;
         }
-        System.out.println("Withdraw Successful!");
         tx.commit();
     }
     public void setAccountBalanceDetails(float money, float withdrawAmount, AccountTransaction transcation, Account account, Session session){

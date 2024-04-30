@@ -8,6 +8,20 @@ import java.util.Scanner;
 
 public class AccountInputService {
     Scanner sc = new Scanner(System.in);
+    public Account inputAccountDetail(){
+        Account account = new Account();
+        AccountInputService accountInputService = new AccountInputService();
+        AccountType accountType = accountInputService.getAccountType();
+        CurrencyType currencyType = accountInputService.getCurrency();
+        String password = accountInputService.accountConfirmPassword();
+        float balance = accountInputService.getBalance(accountType);
+        account.setBalance(balance);
+        account.setType(accountType);
+        account.setCurrency(currencyType);
+        account.setOpen(true);
+        account.setPassword(password);
+        return account;
+    }
     public AccountType getAccountType(){
         System.out.print("""
                 1. Basic Banking Account
@@ -57,8 +71,7 @@ public class AccountInputService {
     }
     public String getAccountPassword(){
         System.out.print("Enter Password: ");
-        String accountPassword = sc.next();
-        return accountPassword;
+        return sc.next();
     }
     public String accountConfirmPassword(){
         String accountPassword = getAccountPassword();

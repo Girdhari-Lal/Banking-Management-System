@@ -19,7 +19,7 @@ public class Report {
                 3. Withdrawals account today
                 4. Summaries of account type
                 5. Show all the customer
-                7. Exit""");
+                6. Exit""");
         System.out.print("Enter number: ");
         int num = sc.nextInt();
         if(num == 1){
@@ -36,13 +36,13 @@ public class Report {
     }
     public void openAccountToday(Session session){
         Transaction tx = session.beginTransaction();
-        String query = "From Customer where date=:date";
-        Query q = session.createQuery(query);
-        q.setParameter("date", LocalDate.now());
-        List<Customer> list=q.list();
+        String query = "Select c.first_name, c.last_name, c.sex, c.cnic, a.type, a.balance from account a inner join customer c on c.id = a.customer_id and a.is_open=1 and date_created=:date_created";
+        Query q = session.createSQLQuery(query);
+        q.setParameter("date_created", LocalDate.now());
+        List<Object[]> list = q.list();
         if(!list.isEmpty()) {
-            for (Customer detail : list) {
-                System.out.println("Name: " + detail.getFirstName() +" "+ detail.getLastName() + ", Occupation: " + detail.getOccupation() + ", CNIC: " + detail.getCnic());
+            for (Object[] row : list) {
+                System.out.println("Name: "+row[0]+" "+row[1]+", Gender: " +row[2]+ ", CNIC: "+row[3]+ ", Account Type: " +row[4]+ ", Balance: " +row[5]);
             }
         }else {
             System.out.println("No new account open today");
@@ -60,23 +60,13 @@ public class Report {
         tx.commit();
     }
     public void accountTypeCount(Session session){
-        int basic = 0, saving = 0, current = 0;
         Transaction tx = session.beginTransaction();
-        String query = "From Account where isOpen=true";
-        Query q = session.createQuery(query);
-        List<Account> list=q.list();
-        for(Account account:list){
-            if(account.getType()== AccountType.BASIC){
-                basic++;
-            } else if (account.getType()==AccountType.SAVING) {
-                saving++;
-            } else if (account.getType()==AccountType.CURRENT) {
-                current++;
-            }
+        String query = "SELECT type, COUNT(type) FROM account where is_open = true group by type";
+        Query q = session.createSQLQuery(query);
+        List<Object[]> list = q.list();
+        for(Object[] row : list){
+            System.out.println(row[0]+" : "+row[1]);
         }
-        System.out.println("Basic Banking Account: "+basic);
-        System.out.println("Saving Account: "+saving);
-        System.out.println("Current Account: "+current);
         tx.commit();
     }
     public void withdrawToday(Session session) {
@@ -85,7 +75,7 @@ public class Report {
                 "FROM account_transaction t\n" +
                 "JOIN Account a ON t.account_id = a.id\n" +
                 "JOIN Customer c ON a.customer_id = c.id\n" +
-                "WHERE t.date = :date  and a.is_open=1\n";
+                "WHERE t.date = :date and a.is_open=1 and t.amount like '-%'\n";
         Query q = session.createSQLQuery(query);
         q.setParameter("date", LocalDate.now());
         List<Object[]> resultList = q.list();
@@ -93,25 +83,16 @@ public class Report {
             System.out.println("No withdraw amount today");
         }
         for (Object[] row : resultList) {
-            Float amount = (Float) row[0];
-            String currency = (String) row[1];
-            String accountType = (String) row[2];
-            String firstName = (String) row[3];
-            String lastName = (String) row[4];
-            System.out.println("Withdraw: " + amount + ", Currency: " + currency + ", Account type: " + accountType + ", account Name: " + firstName + " " + lastName);
+            System.out.println("Withdraw: " + row[0] + ", Currency: " + row[1] + ", Account type: " + row[2] + ", Name: " + row[3] + " " + row[4]);
         }
         tx.commit();
     }
     public void printClosingBalance(Session session){
         Transaction tx = session.beginTransaction();
-        String query = "From Account where isOpen=true";
-        Query q = session.createQuery(query);
-        List<Account> list = q.list();
-        float balance = 0;
-        for(Account account:list){
-            balance = balance+account.getBalance();
-        }
-        System.out.println("Total Closing Balance Today: Rs. "+ balance);
+        String query = "SELECT sum(balance) FROM account WHERE is_open=1;";
+        Query q = session.createSQLQuery(query);
+        Double totalAmount =(Double) q.uniqueResult();
+        System.out.println("Total Closing Balance Today: Rs. "+ totalAmount);
         tx.commit();
     }
 }

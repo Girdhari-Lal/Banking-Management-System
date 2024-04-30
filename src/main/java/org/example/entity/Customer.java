@@ -1,14 +1,12 @@
 package org.example.entity;
 
 import org.example.constant.GenderType;
-
 import javax.persistence.Entity;
 import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
-import java.time.LocalDate;
 import javax.persistence.EnumType;
 @Entity
 public class Customer {
@@ -38,8 +36,6 @@ public class Customer {
     private String dateOfBirth;
     @Column(name = "address", nullable = false)
     private String address;
-    @Column(name = "date", nullable = false)
-    private LocalDate date = LocalDate.now();
     @Enumerated(EnumType.STRING)
     @Column(name="sex", nullable = false)
     private GenderType sex;
