@@ -1,18 +1,17 @@
-package org.example;
+package org.example.entity;
 
+import org.example.constant.GenderType;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Column;
-import java.time.LocalDate;
+import javax.persistence.EnumType;
 @Entity
 public class Customer {
-    public Customer(){
-
-    }
+    public Customer(){}
     private Customer(CustomerBuilder builder){
-        this.age = builder.age;
         this.cnic = builder.cnic;
         this.occupation = builder.occupation;
         this.firstName = builder.firstName;
@@ -25,8 +24,8 @@ public class Customer {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
     private int id;
-    @Column(name = "date", nullable = false)
-    private LocalDate date = LocalDate.now();
+    @Column(unique = true, name = "cnic", nullable = false)
+    private String cnic;
     @Column(name = "occupation", nullable = false)
     private String occupation;
     @Column(name = "first_name", nullable = false)
@@ -37,25 +36,19 @@ public class Customer {
     private String dateOfBirth;
     @Column(name = "address", nullable = false)
     private String address;
-    @Column(name="age", nullable = false)
-    private int age;
+    @Enumerated(EnumType.STRING)
     @Column(name="sex", nullable = false)
-    private String sex;
-    @Column(unique = true, name = "cnic", nullable = false)
-    private Long cnic;
-    public int getId() {
-        return id;
-    }
+    private GenderType sex;
     public String getOccupation() {
         return occupation;
     }
     public String getLastName() {
         return lastName;
     }
-    public String getSex() {
+    public GenderType getSex() {
         return sex;
     }
-    public Long getCnic() {
+    public String getCnic() {
         return cnic;
     }
     public String getFirstName() {
@@ -68,32 +61,24 @@ public class Customer {
         return address;
     }
 
-    public int getAge() {
-        return age;
-    }
-
-    static class CustomerBuilder{
+    public static class CustomerBuilder{
+        private String cnic;
         private String occupation;
         private String firstName;
         private String lastName;
         private String dateOfBirth;
         private String address;
-        private int age;
-        private String sex;
-        private Long cnic;
+        private GenderType sex;
         public CustomerBuilder(Customer customer) {
             this.occupation = customer.getOccupation();
             this.firstName = customer.getFirstName();
             this.lastName = customer.getLastName();
             this.dateOfBirth = customer.getDateOfBirth();
             this.address = customer.getAddress();
-            this.age = customer.getAge();
             this.sex = customer.getSex();
             this.cnic = customer.getCnic();
         }
-        public CustomerBuilder(){
-
-        }
+        public CustomerBuilder(){}
         public CustomerBuilder setOccupation(String occupation) {
            this.occupation = occupation;
             return this;
@@ -115,14 +100,13 @@ public class Customer {
             return this;
         }
         public CustomerBuilder setAge(int age) {
-            this.age = age;
             return this;
         }
-        public CustomerBuilder setSex(String sex) {
+        public CustomerBuilder setSex(GenderType sex) {
             this.sex = sex;
             return this;
         }
-        public CustomerBuilder setCnic(Long cnic) {
+        public CustomerBuilder setCnic(String cnic) {
             this.cnic = cnic;
             return this;
         }
